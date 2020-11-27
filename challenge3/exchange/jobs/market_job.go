@@ -3,7 +3,7 @@ package jobs
 import (
 	"fmt"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
@@ -35,27 +35,26 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 		return
 	}
 
+	now := time.Now()
 	for _, data := range respData.Result {
-
 		market := data.MarketName
 		// Screen required data
 		if _, ok := allowedMarket[market]; ok {
-			fmt.Println(data)
-			fmt.Println(data.Volume)
+
 			oldRate := rateService.GetByMarketName(market)
-			tm := strings.Replace(data.Timestamp, "T", " ", -1)
-			parseTimestamp, _ := time.Parse(timeFormat, tm)
+
+			volume := data.Volume
+			high := data.High
+			low := data.Low
 
 			rate := models.Rate{
 				MarketName: market,
-				High:       data.High,
-				Low:        data.Low,
-				Volume:     data.Volume,
-				Timestamp:  parseTimestamp,
+				High:       high,
+				Low:        low,
+				Volume:     volume,
+				Timestamp:  now,
 			}
 			newRate, err := rateService.CreateRate(rate)
-
-			fmt.Println("newRate", newRate)
 
 			if err != nil {
 				fmt.Printf(`an error occurred while creating market rate: "%s"`, err.Error())
@@ -64,19 +63,26 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 
 			if oldRate != nil {
 
-				volumeGrowth := utils.CalculatePercentageDifference(oldRate.Volume, newRate.Volume)
-				highGrowth := utils.CalculatePercentageDifference(oldRate.High, newRate.High)
-				lowGrowth := utils.CalculatePercentageDifference(oldRate.Low, newRate.Low)
+				volumeGrowth := utils.CalculatePercentageDifference(newRate.Volume, oldRate.Volume)
+				highGrowth := utils.CalculatePercentageDifference(newRate.High, oldRate.High)
+				lowGrowth := utils.CalculatePercentageDifference(newRate.Low, oldRate.Low)
 
 				record := models.GrowthRecord{
 					FromRateID:   oldRate.ID,
 					ToRateID:     newRate.ID,
-					From:         oldRate.Timestamp,
-					To:           oldRate.Timestamp,
+					FromDate:     oldRate.Timestamp.Unix(),
+					ToDate:       now.Unix(),
 					VolumeGrowth: volumeGrowth,
-					HighGrowth:   highGrowth,
 					LowGrowth:    lowGrowth,
+					HighGrowth:   highGrowth,
 				}
+
+				// b, _ := json.Marshal(record)
+
+				// fmt.Println("======", string(b), "======")
+				// fmt.Println(record.VolumeGrowth)
+				// fmt.Println(record.HighGrowth)
+				// fmt.Println(record.LowGrowth)
 
 				_, err := growthService.CreateGrowthRecord(record)
 
@@ -86,4 +92,11 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 			}
 		}
 	}
+}
+
+func formatFloat(value float64) float64 {
+	str := strconv.FormatFloat(value, 'f', -1, 64)
+	result, _ := strconv.ParseFloat(str, 64)
+
+	return result
 }

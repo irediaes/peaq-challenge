@@ -11,7 +11,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
-	github.com/micro/go-micro/v2 v2.9.1 // indirect
+	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/micro/v2 v2.9.2-0.20200728090142-c7f7e4a71077 // indirect
 	github.com/spf13/viper v1.6.3 // indirect
 	github.com/whiteshtef/clockwork v0.0.0-20200221012748-027e62affd84

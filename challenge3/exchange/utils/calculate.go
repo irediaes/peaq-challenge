@@ -1,19 +1,26 @@
 package utils
 
+import (
+	"fmt"
+	"strconv"
+)
+
 // CalculatePercentageDifference ...
-func CalculatePercentageDifference(num1, num2 float64) float64 {
+func CalculatePercentageDifference(newNum, originNum float64) float64 {
 
-	diff := difference(num1, num2)
-	average := (num1 + num2) / 2
+	diff := newNum - originNum
 
-	percentDiff := (diff / average) * 100
+	percentDiff := (diff / originNum) * 100
 
-	return percentDiff
+	return Round4Decimal(percentDiff)
 }
 
-func difference(num1, num2 float64) float64 {
-	if num1 > num2 {
-		return (num1 - num2)
+// Round4Decimal ...
+func Round4Decimal(num float64) float64 {
+	numb := fmt.Sprintf("%.4f", num)
+	result, _ := strconv.ParseFloat(numb, 64)
+	if result == 0 {
+		return 0.0
 	}
-	return (num2 - num1)
+	return result
 }

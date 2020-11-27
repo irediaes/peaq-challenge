@@ -23,8 +23,8 @@ message GrowthRecord {
     float volume_growth = 4;
     float high_growth = 5;
     float low_growth = 6;
-    string from = 7;
-    string to = 8;
+    int64 from = 7;
+    int64 to = 8;
     Rate from_rate = 9;
     Rate to_rate = 10;
 }

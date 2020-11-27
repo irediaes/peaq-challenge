@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"time"
-
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
 )
 
@@ -34,13 +32,12 @@ func (r *GrowthRecordStorage) Fetch(rateID uint) *models.GrowthRecord {
 // FetchByTimestamp Get rates from - to timestamp
 func (r *GrowthRecordStorage) FetchByTimestamp(from, to int64) []*models.GrowthRecord {
 	var rates []*models.GrowthRecord
-	fromTime := time.Unix(from, 0).UTC()
-	toTime := time.Unix(to, 0).UTC()
 
 	// Select resource from database
 	r.db.
-		Where("from >= ?", fromTime).
-		Where("to >= ?", toTime).
+		Preload("FromRate").
+		Preload("ToRate").
+		Where("from_date >= ? AND to_date <= ?", from, to).
 		Order("created_at desc").
 		Find(&rates)
 

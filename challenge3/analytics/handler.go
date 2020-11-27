@@ -1,35 +1,118 @@
-package handler
+package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"time"
 
+	"github.com/ebikode/peaq-challenge/challenge3/analytics/models"
 	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
 )
 
+// GetGrowthRecords ...
 func GetGrowthRecords(rateService pb.RateServiceClient) http.HandlerFunc {
 
-	return func(w http.WriterResponse, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 		ctx := context.Background()
 
 		from, to, format := PaginationParams(r)
 
-		req := &pb.GetRequest{from, to}
+		println(from, to)
 
-		records, err := rateService.GetGrowthRecords(ctx, req)
-		fmt.Println(records, err)
+		req := &pb.GetRequest{
+			FromTimestamp: from,
+			ToTimestamp:   to,
+		}
+
+		records, _ := rateService.GetGrowthRecords(ctx, req)
+		// fmt.Println(records, err)
 
 		if format == jsonString {
-			resp := records
+			parsedRecords := unmarshalProtoGrowthRecordList(records.GrowthRecords)
 
-			Respond(w, r, resp)
+			responseDataList := []*models.Response{}
+
+			for i := 0; i < len(parsedRecords); i++ {
+
+				record := parsedRecords[i]
+				dataList := []*models.GrowthData{}
+
+				data := &models.GrowthData{
+					MarketPair: record.FromRate.MarketName,
+				}
+				data.Data.VolumeGrowth = Round4Decimal(record.VolumeGrowth)
+				data.Data.HighGrowth = Round4Decimal(record.HighGrowth)
+				data.Data.LowGrowth = Round4Decimal(record.LowGrowth)
+				dataList = append(dataList, data)
+
+				nextRecord := parsedRecords[i+1]
+				if nextRecord.FromDate == record.FromDate && nextRecord.ToDate == record.ToDate {
+					nextData := &models.GrowthData{
+						MarketPair: nextRecord.FromRate.MarketName,
+					}
+					nextData.Data.VolumeGrowth = Round4Decimal(nextRecord.VolumeGrowth)
+					nextData.Data.HighGrowth = Round4Decimal(nextRecord.HighGrowth)
+					nextData.Data.LowGrowth = Round4Decimal(nextRecord.LowGrowth)
+					dataList = append(dataList, nextData)
+					i++
+				}
+
+				response := &models.Response{
+					From: record.FromDate,
+					To:   record.ToDate,
+					Data: dataList,
+				}
+
+				responseDataList = append(responseDataList, response)
+			}
+
+			Respond(w, r, responseDataList)
 			return
 		}
 		resp := Message(false, "Bad Format Supplied")
-		ErrorResponse(http.BadGatewayStatus, w, r, resp)
+		ErrorResponse(http.StatusBadRequest, w, r, resp)
 		return
 	}
 
+}
+
+// unmarshalGrowthRecordList ...
+func unmarshalProtoGrowthRecordList(records []*pb.GrowthRecord) []*models.GrowthRecord {
+	recordList := []*models.GrowthRecord{}
+	for _, record := range records {
+		parsedRecord := unmarshalProtoGrowthRecord(record)
+		recordList = append(recordList, parsedRecord)
+	}
+	return recordList
+}
+
+// unmarshalGrowthRecord ...
+func unmarshalProtoGrowthRecord(rate *pb.GrowthRecord) *models.GrowthRecord {
+
+	fromDate := time.Unix(rate.From, 0).UTC()
+	toDate := time.Unix(rate.To, 0).UTC()
+
+	return &models.GrowthRecord{
+		FromRateID:   uint(rate.FromRateId),
+		ToRateID:     uint(rate.ToRateId),
+		VolumeGrowth: float64(rate.VolumeGrowth),
+		HighGrowth:   float64(rate.HighGrowth),
+		LowGrowth:    float64(rate.LowGrowth),
+		FromDate:     fromDate,
+		ToDate:       toDate,
+		FromRate:     unmarshalProtoRate(rate.FromRate),
+		ToRate:       unmarshalProtoRate(rate.ToRate),
+	}
+}
+
+// unmarshalGrowthRecord ...
+func unmarshalProtoRate(rate *pb.Rate) models.Rate {
+
+	return models.Rate{
+		MarketName: rate.MarketName,
+		Volume:     float64(rate.Volume),
+		High:       float64(rate.High),
+		Low:        float64(rate.Low),
+	}
 }

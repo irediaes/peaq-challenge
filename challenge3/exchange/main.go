@@ -1,5 +1,10 @@
 package main
 
+// import (
+// 	"fmt"
+// 	"math/big"
+// )
+
 import (
 	"log"
 	"net"
@@ -56,3 +61,10 @@ func main() {
 	}
 
 }
+
+// func main() {
+// 	oldNum := float64(8.0497183772403904E+17)
+// 	newNum := big.NewRat(1, 1)
+// 	newNum.SetFloat64(oldNum)
+// 	fmt.Println(newNum.FloatString(0))
+// }

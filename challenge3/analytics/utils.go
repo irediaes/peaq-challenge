@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-chi/render"
@@ -13,19 +16,22 @@ const (
 	jsonString = "json"
 )
 
- var allowedFormats = map[string]string{
-	jsonString: jsonString
- } 
+var allowedFormats = map[string]string{
+	jsonString: jsonString,
+}
 
+// Message ...
 func Message(status bool, message string) map[string]interface{} {
 	return map[string]interface{}{"status": status, "message": message}
 }
 
-func Respond(w http.ResponseWriter, r *http.Request, data map[string]interface{}) {
+// Respond ...
+func Respond(w http.ResponseWriter, r *http.Request, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	render.JSON(w, r, data)
 }
 
+// ErrorResponse ...
 func ErrorResponse(errorCode int, w http.ResponseWriter, r *http.Request, data map[string]interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(errorCode)
@@ -39,19 +45,19 @@ func PaginationParams(r *http.Request) (int64, int64, string) {
 	toParam := params.Get("to")
 	formatParam := params.Get("format")
 
-	now := time.Now().UtC()
-	from := now.Sub(1 * time.Hour).Format(timeFormat).Unix()
-	to := now.Format(timeFormat).Unix()
+	now := time.Now().UTC()
+	from := now.Add(-time.Hour * 1).Unix()
+	to := now.Unix()
 	format := jsonString
 
 	if len(fromParam) > 0 {
-		parsedTime, err := parseTime(fromParam)
+		fromParsedTime, err := parseTime(fromParam)
 		if err == nil {
-			from = parsedTime
+			from = fromParsedTime
 		}
 	}
 	if len(toParam) > 0 {
-		parsedTime, err := parseTime(fromParam)
+		parsedTime, err := parseTime(toParam)
 		if err == nil {
 			to = parsedTime
 		}
@@ -65,14 +71,23 @@ func PaginationParams(r *http.Request) (int64, int64, string) {
 }
 
 func parseTime(dateParamString string) (int64, error) {
-	unescape, err := url.QueryEscape(dateParamString)
-	if err == nil {
-		parsedTime, err := time.Parse(timeFormat, unescape)
-		if err == nil {
-			parsedTime = parsedTime.UTC().Unix()
+	unescape, err := url.QueryUnescape(dateParamString)
+	formatString := strings.Replace(unescape, "T", " ", -1)
+	parsedTime, err := time.Parse(timeFormat, formatString)
 
-			return parsedTime, nil
-		}
+	// fmt.Println("formatString", formatString)
+	if err == nil {
+		return parsedTime.Unix(), nil
 	}
-	return nil, err
+	return 0, err
+}
+
+// Round4Decimal ...
+func Round4Decimal(num float64) float64 {
+	numb := fmt.Sprintf("%.4f", num)
+	result, _ := strconv.ParseFloat(numb, 64)
+	if result == 0 {
+		return 0.0
+	}
+	return result
 }
