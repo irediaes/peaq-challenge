@@ -11,16 +11,16 @@
 1. Exchange
 2. Analytics
 
+build the service by running `docker-composer build`
+run the service by running `docker-composer run`
+
 ## Exchange Service 
 Handles the core business logic.
 Data Manipulation
 Communication with external APIs
 
-build the service by running `docker-composer build exchange`
-run the service by running `docker-composer run exchange`
-
 ## Analytics Service
-The Client stub interface between the Exchange service and the users.
+The Client interface between the Exchange service and the users.
 Handles API calls and exposes endpoint for users to retrieve data
 
 build the service by running `docker-composer build analytics`
@@ -45,34 +45,12 @@ curl -X GET \
 # code block
 [
   {
-    "from": "2020-11-27T07:33:04Z",
-    "to": "2020-11-27T07:33:41Z",
-    "data": [
-      {
-        "market_pair": "BTC-ADA",
-        "data": {
-          "volume_growth": 0.0154,
-          "high_growth": 0,
-          "low_growth": 0
-        }
-      },
-      {
-        "market_pair": "ETH-ADA",
-        "data": {
-          "volume_growth": 0,
-          "high_growth": 0,
-          "low_growth": 0
-        }
-      }
-    ]
-  },
-  {
     "from": "2020-11-27T07:29:53Z",
     "to": "2020-11-27T07:33:04Z",
-    "data": [
+    "market_data": [
       {
         "market_pair": "BTC-ADA",
-        "data": {
+        "growth_data": {
           "volume_growth": -0.0081,
           "high_growth": 0,
           "low_growth": 0
@@ -80,7 +58,7 @@ curl -X GET \
       },
       {
         "market_pair": "ETH-ADA",
-        "data": {
+        "growth_data": {
           "volume_growth": -0.0617,
           "high_growth": 0,
           "low_growth": 0

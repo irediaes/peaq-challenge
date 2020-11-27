@@ -15,7 +15,9 @@ func (h handler) GetGrowthRecords(ctx context.Context, req *pb.GetRequest) (*pb.
 
 	records, err := h.repository.GetByTimestamp(req.FromTimestamp, req.ToTimestamp)
 
-	recordList := UnmarshalGrowthRecordList(records)
+	response := &pb.Response{}
 
-	return &pb.Response{GrowthRecords: recordList}, err
+	response.Data = UnmarshalProtoResponseData(records, 2)
+
+	return response, err
 }
