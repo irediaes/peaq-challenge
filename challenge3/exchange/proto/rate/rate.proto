@@ -36,7 +36,23 @@ message GetRequest {
 }
 
 message Response {
-    int32 status = 1;
-    GrowthRecord growth_record = 2;
-    repeated GrowthRecord growth_records = 3;
+    repeated GrowthRecord growth_records = 1;
+    repeated ResponseData data = 2;
+}
+
+message ResponseData {
+    string from = 1;
+    string to = 2;
+    repeated ResponseMarketData market_data= 3;
+}
+    
+message ResponseMarketData {
+    string market_pair = 1;
+    GrowthData growth_data = 2;
+}
+
+message GrowthData {
+    float volume_growth = 1;
+    float high_growth = 2;
+    float low_growth = 3;
 }

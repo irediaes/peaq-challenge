@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 
@@ -80,14 +78,4 @@ func parseTime(dateParamString string) (int64, error) {
 		return parsedTime.Unix(), nil
 	}
 	return 0, err
-}
-
-// Round4Decimal ...
-func Round4Decimal(num float64) float64 {
-	numb := fmt.Sprintf("%.4f", num)
-	result, _ := strconv.ParseFloat(numb, 64)
-	if result == 0 {
-		return 0.0
-	}
-	return result
 }
