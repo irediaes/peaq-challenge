@@ -3,7 +3,7 @@ package jobs
 import (
 	"fmt"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
@@ -34,28 +34,27 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 		fmt.Printf(`an error occurred while fetching market data: "%s"`, err.Error())
 		return
 	}
-
+	now := time.Now()
 	for _, data := range respData.Result {
 
 		market := data.MarketName
 		// Screen required data
 		if _, ok := allowedMarket[market]; ok {
-			fmt.Println(data)
-			fmt.Println(data.Volume)
+
 			oldRate := rateService.GetByMarketName(market)
-			tm := strings.Replace(data.Timestamp, "T", " ", -1)
-			parseTimestamp, _ := time.Parse(timeFormat, tm)
+
+			volume, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.Volume), 64)
+			high, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.High), 64)
+			low, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.Low), 64)
 
 			rate := models.Rate{
 				MarketName: market,
-				High:       data.High,
-				Low:        data.Low,
-				Volume:     data.Volume,
-				Timestamp:  parseTimestamp,
+				High:       high,
+				Low:        low,
+				Volume:     volume,
+				Timestamp:  now,
 			}
 			newRate, err := rateService.CreateRate(rate)
-
-			fmt.Println("newRate", newRate)
 
 			if err != nil {
 				fmt.Printf(`an error occurred while creating market rate: "%s"`, err.Error())
@@ -64,15 +63,19 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 
 			if oldRate != nil {
 
-				volumeGrowth := utils.CalculatePercentageDifference(oldRate.Volume, newRate.Volume)
-				highGrowth := utils.CalculatePercentageDifference(oldRate.High, newRate.High)
-				lowGrowth := utils.CalculatePercentageDifference(oldRate.Low, newRate.Low)
+				vGrowth := utils.CalculatePercentageDifference(oldRate.Volume, newRate.Volume)
+				hGrowth := utils.CalculatePercentageDifference(oldRate.High, newRate.High)
+				lGrowth := utils.CalculatePercentageDifference(oldRate.Low, newRate.Low)
+
+				volumeGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", vGrowth), 64)
+				highGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", hGrowth), 64)
+				lowGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", lGrowth), 64)
 
 				record := models.GrowthRecord{
 					FromRateID:   oldRate.ID,
 					ToRateID:     newRate.ID,
-					From:         oldRate.Timestamp,
-					To:           oldRate.Timestamp,
+					FromDate:     oldRate.Timestamp,
+					ToDate:       now,
 					VolumeGrowth: volumeGrowth,
 					HighGrowth:   highGrowth,
 					LowGrowth:    lowGrowth,

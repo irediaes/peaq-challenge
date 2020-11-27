@@ -37,10 +37,14 @@ func (r *GrowthRecordStorage) FetchByTimestamp(from, to int64) []*models.GrowthR
 	fromTime := time.Unix(from, 0).UTC()
 	toTime := time.Unix(to, 0).UTC()
 
+	// fmt.Println(from, to)
+	// fmt.Println(fromTime, toTime)
+
 	// Select resource from database
 	r.db.
-		Where("from >= ?", fromTime).
-		Where("to >= ?", toTime).
+		Preload("FromRate").
+		Preload("ToRate").
+		Where("from_date >= ? && to_date <= ?", fromTime, toTime).
 		Order("created_at desc").
 		Find(&rates)
 
