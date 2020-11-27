@@ -34,11 +34,11 @@ func (config *Config) InitDB() (*MDatabase, error) {
 	dbPort := os.Getenv("DB_PORT")
 	charset := "utf8mb4_unicode_ci"
 
-	dbHost = "127.0.0.1"
-	dbPort = "3306"
-	dbName = "peaq_analytics_goDB"
-	dbUser = "root"
-	dbPass = ""
+	// dbHost = "127.0.0.1"
+	// dbPort = "3306"
+	// dbName = "peaq_analytics_goDB"
+	// dbUser = "root"
+	// dbPass = ""
 
 	// First Connect to create a DB if it doesn't exist
 	conHostURI := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True", dbUser, dbPass, dbHost, dbPort) //Build connection string

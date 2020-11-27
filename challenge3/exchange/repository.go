@@ -28,8 +28,8 @@ func UnmarshalGrowthRecord(rate *models.GrowthRecord) *pb.GrowthRecord {
 		VolumeGrowth: float32(rate.VolumeGrowth),
 		HighGrowth:   float32(rate.HighGrowth),
 		LowGrowth:    float32(rate.LowGrowth),
-		From:         rate.FromDate.Format("2006-01-02 15:04:05"),
-		To:           rate.ToDate.Format("2006-01-02 15:04:05"),
+		From:         rate.FromDate,
+		To:           rate.ToDate,
 		FromRate:     unmarshalRate(rate.FromRate),
 		ToRate:       unmarshalRate(rate.ToRate),
 	}

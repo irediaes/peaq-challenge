@@ -34,18 +34,18 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 		fmt.Printf(`an error occurred while fetching market data: "%s"`, err.Error())
 		return
 	}
+
 	now := time.Now()
 	for _, data := range respData.Result {
-
 		market := data.MarketName
 		// Screen required data
 		if _, ok := allowedMarket[market]; ok {
 
 			oldRate := rateService.GetByMarketName(market)
 
-			volume, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.Volume), 64)
-			high, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.High), 64)
-			low, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", data.Low), 64)
+			volume := data.Volume
+			high := data.High
+			low := data.Low
 
 			rate := models.Rate{
 				MarketName: market,
@@ -63,23 +63,26 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 
 			if oldRate != nil {
 
-				vGrowth := utils.CalculatePercentageDifference(oldRate.Volume, newRate.Volume)
-				hGrowth := utils.CalculatePercentageDifference(oldRate.High, newRate.High)
-				lGrowth := utils.CalculatePercentageDifference(oldRate.Low, newRate.Low)
-
-				volumeGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", vGrowth), 64)
-				highGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", hGrowth), 64)
-				lowGrowth, _ := strconv.ParseFloat(fmt.Sprintf("%.4f", lGrowth), 64)
+				volumeGrowth := utils.CalculatePercentageDifference(newRate.Volume, oldRate.Volume)
+				highGrowth := utils.CalculatePercentageDifference(newRate.High, oldRate.High)
+				lowGrowth := utils.CalculatePercentageDifference(newRate.Low, oldRate.Low)
 
 				record := models.GrowthRecord{
 					FromRateID:   oldRate.ID,
 					ToRateID:     newRate.ID,
-					FromDate:     oldRate.Timestamp,
-					ToDate:       now,
+					FromDate:     oldRate.Timestamp.Unix(),
+					ToDate:       now.Unix(),
 					VolumeGrowth: volumeGrowth,
-					HighGrowth:   highGrowth,
 					LowGrowth:    lowGrowth,
+					HighGrowth:   highGrowth,
 				}
+
+				// b, _ := json.Marshal(record)
+
+				// fmt.Println("======", string(b), "======")
+				// fmt.Println(record.VolumeGrowth)
+				// fmt.Println(record.HighGrowth)
+				// fmt.Println(record.LowGrowth)
 
 				_, err := growthService.CreateGrowthRecord(record)
 
@@ -89,4 +92,11 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 			}
 		}
 	}
+}
+
+func formatFloat(value float64) float64 {
+	str := strconv.FormatFloat(value, 'f', -1, 64)
+	result, _ := strconv.ParseFloat(str, 64)
+
+	return result
 }

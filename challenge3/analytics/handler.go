@@ -41,9 +41,9 @@ func GetGrowthRecords(rateService pb.RateServiceClient) http.HandlerFunc {
 				data := &models.GrowthData{
 					MarketPair: record.FromRate.MarketName,
 				}
-				data.Data.VolumeGrowth = record.VolumeGrowth
-				data.Data.HighGrowth = record.HighGrowth
-				data.Data.LowGrowth = record.LowGrowth
+				data.Data.VolumeGrowth = Round4Decimal(record.VolumeGrowth)
+				data.Data.HighGrowth = Round4Decimal(record.HighGrowth)
+				data.Data.LowGrowth = Round4Decimal(record.LowGrowth)
 				dataList = append(dataList, data)
 
 				nextRecord := parsedRecords[i+1]
@@ -51,9 +51,9 @@ func GetGrowthRecords(rateService pb.RateServiceClient) http.HandlerFunc {
 					nextData := &models.GrowthData{
 						MarketPair: nextRecord.FromRate.MarketName,
 					}
-					nextData.Data.VolumeGrowth = nextRecord.VolumeGrowth
-					nextData.Data.HighGrowth = nextRecord.HighGrowth
-					nextData.Data.LowGrowth = nextRecord.LowGrowth
+					nextData.Data.VolumeGrowth = Round4Decimal(nextRecord.VolumeGrowth)
+					nextData.Data.HighGrowth = Round4Decimal(nextRecord.HighGrowth)
+					nextData.Data.LowGrowth = Round4Decimal(nextRecord.LowGrowth)
 					dataList = append(dataList, nextData)
 					i++
 				}
@@ -90,8 +90,8 @@ func unmarshalProtoGrowthRecordList(records []*pb.GrowthRecord) []*models.Growth
 // unmarshalGrowthRecord ...
 func unmarshalProtoGrowthRecord(rate *pb.GrowthRecord) *models.GrowthRecord {
 
-	fromDate, _ := time.Parse(timeFormat, rate.From)
-	toDate, _ := time.Parse(timeFormat, rate.To)
+	fromDate := time.Unix(rate.From, 0).UTC()
+	toDate := time.Unix(rate.To, 0).UTC()
 
 	return &models.GrowthRecord{
 		FromRateID:   uint(rate.FromRateId),
