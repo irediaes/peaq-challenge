@@ -18,7 +18,7 @@ type service struct {
 	repo DBRepository
 }
 
-// NewService creates o rate service with the necessary dependencies
+// NewService creates rate service with the necessary dependencies
 func NewService(
 	repo DBRepository,
 ) Service {

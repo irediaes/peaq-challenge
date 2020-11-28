@@ -26,6 +26,8 @@ var allowedMarket = map[string]string{
 
 func getMarketData(rateService rate.Service, growthService growth.Service) {
 
+	fmt.Println("Get Market Data called!")
+
 	respData := &models.MarketResponse{}
 
 	err := utils.SendRequestAndParseResponse(http.MethodGet, url, nil, respData)
@@ -35,7 +37,6 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 		return
 	}
 
-	now := time.Now()
 	for _, data := range respData.Result {
 		market := data.MarketName
 		// Screen required data
@@ -43,48 +44,16 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 
 			oldRate := rateService.GetByMarketName(market)
 
-			volume := data.Volume
-			high := data.High
-			low := data.Low
-
-			rate := models.Rate{
-				MarketName: market,
-				High:       high,
-				Low:        low,
-				Volume:     volume,
-				Timestamp:  now,
-			}
-			newRate, err := rateService.CreateRate(rate)
+			newRate, err := saveRate(data, rateService)
 
 			if err != nil {
 				fmt.Printf(`an error occurred while creating market rate: "%s"`, err.Error())
 
 			}
 
-			if oldRate != nil {
+			if oldRate != nil && err == nil {
 
-				volumeGrowth := utils.CalculatePercentageDifference(newRate.Volume, oldRate.Volume)
-				highGrowth := utils.CalculatePercentageDifference(newRate.High, oldRate.High)
-				lowGrowth := utils.CalculatePercentageDifference(newRate.Low, oldRate.Low)
-
-				record := models.GrowthRecord{
-					FromRateID:   oldRate.ID,
-					ToRateID:     newRate.ID,
-					FromDate:     oldRate.Timestamp.Unix(),
-					ToDate:       now.Unix(),
-					VolumeGrowth: volumeGrowth,
-					LowGrowth:    lowGrowth,
-					HighGrowth:   highGrowth,
-				}
-
-				// b, _ := json.Marshal(record)
-
-				// fmt.Println("======", string(b), "======")
-				// fmt.Println(record.VolumeGrowth)
-				// fmt.Println(record.HighGrowth)
-				// fmt.Println(record.LowGrowth)
-
-				_, err := growthService.CreateGrowthRecord(record)
+				err := saveGrowthRate(newRate, oldRate, growthService)
 
 				if err != nil {
 					fmt.Printf(`an error occurred while creating market growth rate: "%s"`, err.Error())
@@ -92,6 +61,57 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 			}
 		}
 	}
+}
+
+func saveRate(data models.ResultPayload, rateService rate.Service) (*models.Rate, error) {
+	now := time.Now()
+	market := data.MarketName
+	volume := data.Volume
+	high := data.High
+	low := data.Low
+
+	rate := models.Rate{
+		MarketName: market,
+		High:       high,
+		Low:        low,
+		Volume:     volume,
+		Timestamp:  now,
+	}
+
+	newRate, err := rateService.CreateRate(rate)
+	return newRate, err
+}
+
+func saveGrowthRate(
+	newRate, oldRate *models.Rate,
+	growthService growth.Service,
+) error {
+	now := time.Now()
+
+	volumeGrowth := utils.CalculatePercentageDifference(newRate.Volume, oldRate.Volume)
+	highGrowth := utils.CalculatePercentageDifference(newRate.High, oldRate.High)
+	lowGrowth := utils.CalculatePercentageDifference(newRate.Low, oldRate.Low)
+
+	record := models.GrowthRecord{
+		FromRateID:   oldRate.ID,
+		ToRateID:     newRate.ID,
+		FromDate:     oldRate.Timestamp.Unix(),
+		ToDate:       now.Unix(),
+		VolumeGrowth: volumeGrowth,
+		LowGrowth:    lowGrowth,
+		HighGrowth:   highGrowth,
+	}
+
+	// b, _ := json.Marshal(record)
+
+	// fmt.Println("======", string(b), "======")
+	// fmt.Println(record.VolumeGrowth)
+	// fmt.Println(record.HighGrowth)
+	// fmt.Println(record.LowGrowth)
+
+	_, err := growthService.CreateGrowthRecord(record)
+
+	return err
 }
 
 func formatFloat(value float64) float64 {

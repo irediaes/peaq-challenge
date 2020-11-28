@@ -67,6 +67,11 @@ func (config *Config) InitDB() (*MDatabase, error) {
 		return mdb, err
 	}
 
+	// mdb.db.Debug().DropTableIfExists(
+	// 	&models.Rate{},
+	// 	&models.GrowthRecord{},
+	// )
+
 	// Migrating tables to database
 	mdb.db.Debug().AutoMigrate(
 		&models.Rate{},

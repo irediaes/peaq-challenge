@@ -8,10 +8,13 @@ WORKDIR /app
 
 ENV GO111MODULE=on
 
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
 
-RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o exchange
+RUN go test -v -vet=off ./tests/...
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o analytics .
 
 # Run container
 FROM alpine:latest
