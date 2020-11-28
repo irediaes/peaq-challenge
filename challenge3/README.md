@@ -11,24 +11,19 @@
 1. Exchange
 2. Analytics
 
-build the service by running `docker-composer build`
+Build the services with `docker-composer build`
+Run the services with `docker-composer up`
 
 ## Exchange Service 
 Handles the core business logic.
 Data Manipulation
 Communication with external APIs
 
-run the service by running `docker-composer run exchange`
-
 ## Analytics Service
 The Client interface between the Exchange service and the users.
 Handles API calls and exposes endpoint for users to retrieve data
 
-run the service by running `docker-compose run -p 127.0.0.1:50052:50052 analytics`
-
-
-## Endpoint
-
+## Endpoint:
 ## base: 
 `127.0.0.1:50052/export/analytics`
 ## params: 

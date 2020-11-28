@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
@@ -22,7 +23,7 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 		}
 
 		records, err := rateService.GetGrowthRecords(ctx, req)
-		// fmt.Println(records, err)
+		fmt.Println(records, err)
 
 		if format == jsonString {
 			if err != nil {
