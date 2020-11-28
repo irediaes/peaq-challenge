@@ -8,11 +8,9 @@ import (
 )
 
 // GetGrowthRecords ...
-func GetGrowthRecords(rateService pb.RateServiceClient) http.HandlerFunc {
+func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		ctx := context.Background()
 
 		from, to, format := PaginationParams(r)
 
@@ -23,10 +21,15 @@ func GetGrowthRecords(rateService pb.RateServiceClient) http.HandlerFunc {
 			ToTimestamp:   to,
 		}
 
-		records, _ := rateService.GetGrowthRecords(ctx, req)
-		// fmt.Println(records.Data, err)
+		records, err := rateService.GetGrowthRecords(ctx, req)
+		// fmt.Println(records, err)
 
 		if format == jsonString {
+			if err != nil {
+				resp := Message(false, "Error Occurred while fetching Records.")
+				ErrorResponse(http.StatusBadRequest, w, r, resp)
+				return
+			}
 
 			Respond(w, r, records.Data)
 			return

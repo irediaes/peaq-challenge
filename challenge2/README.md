@@ -1,4 +1,4 @@
-# How to correctly stop and debug Goroutines?
+## How to correctly stop and debug Goroutines?
 
 Check out the code explained below at [main.go](github.com/ebikode/peaq-challenge/challenge2).
 

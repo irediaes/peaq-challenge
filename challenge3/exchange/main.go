@@ -8,6 +8,7 @@ package main
 import (
 	"log"
 	"net"
+	"os"
 
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/jobs"
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/growth"
@@ -17,11 +18,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	port = ":50051"
-)
-
 func main() {
+	address := os.Getenv("SERVER_ADDRESS")
+	// address := ":50051"
+
 	// initialize DB
 	dbConfig := storage.New()
 	mdb, err := dbConfig.InitDB()
@@ -38,15 +38,13 @@ func main() {
 	h := &handler{repo}
 
 	// Set-up our gRPC server.
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", address)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 
-	// Register service with the gRPC server, this will tie our
-	// implementation into the auto-generated interface code for our
-	// protobuf definition.
+	// Register service with the gRPC server
 	pb.RegisterRateServiceServer(s, h)
 
 	// Register reflection service on gRPC server.
@@ -55,16 +53,9 @@ func main() {
 	// Init Jobs
 	jobs.Init(mdb)
 
-	log.Println("Running on port:", port)
+	log.Println("Running on :", address)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 
 }
-
-// func main() {
-// 	oldNum := float64(8.0497183772403904E+17)
-// 	newNum := big.NewRat(1, 1)
-// 	newNum.SetFloat64(oldNum)
-// 	fmt.Println(newNum.FloatString(0))
-// }

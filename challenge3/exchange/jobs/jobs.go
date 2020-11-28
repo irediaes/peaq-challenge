@@ -3,8 +3,12 @@ package jobs
 import (
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/growth"
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/rate"
+	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/schedule"
 	storage "github.com/ebikode/peaq-challenge/challenge3/exchange/storage/mysql"
-	"github.com/whiteshtef/clockwork"
+)
+
+const (
+	scheduleInMinites = 5
 )
 
 // Init Initialize all scheduled jobs
@@ -17,20 +21,16 @@ func Init(mdb *storage.MDatabase) {
 	growthService := growth.NewService(growthStorage)
 	rateService := rate.NewService(rateStorage)
 
-	// Initialize clockwork schedules
-	sched := clockwork.NewScheduler()
+	// Initialize schedules
+	sched := schedule.NewSchedule()
 
 	var runJobs = func() {
 
 		var runMarkDataAutomation = func() {
 			getMarketData(rateService, growthService)
 		}
-
-		runMarkDataAutomation()
-
-		go sched.Schedule().Every(5).Minutes().Do(runMarkDataAutomation)
-		sched.Run()
+		go runMarkDataAutomation()
+		go sched.Run(runMarkDataAutomation, scheduleInMinites)
 	}
-
-	go runJobs()
+	runJobs()
 }

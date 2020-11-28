@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/ebikode/peaq-challenge/challenge3/exchange/utils"
@@ -17,7 +18,8 @@ func TestCalculate(t *testing.T) {
 	want := utils.Round4Decimal(-13.652275379229861)
 
 	if got != want {
-		t.Errorf(`got "%f", want "%f"`, got, want)
+		err := fmt.Sprintf(`got "%f", want "%f"`, got, want)
+		t.Fatal(err)
 	}
 }
 
@@ -30,6 +32,7 @@ func TestRound4Decimal(t *testing.T) {
 	want := -13.6523
 
 	if got != want {
-		t.Errorf(`got "%f", want "%f"`, got, want)
+		err := fmt.Sprintf(`got "%f", want "%f"`, got, want)
+		t.Fatal(err)
 	}
 }

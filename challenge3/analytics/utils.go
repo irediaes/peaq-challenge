@@ -1,12 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-
-	"github.com/go-chi/render"
 )
 
 const (
@@ -26,14 +25,15 @@ func Message(status bool, message string) map[string]interface{} {
 // Respond ...
 func Respond(w http.ResponseWriter, r *http.Request, data interface{}) {
 	w.Header().Add("Content-Type", "application/json")
-	render.JSON(w, r, data)
+	json.NewEncoder(w).Encode(data)
+
 }
 
 // ErrorResponse ...
 func ErrorResponse(errorCode int, w http.ResponseWriter, r *http.Request, data map[string]interface{}) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(errorCode)
-	render.JSON(w, r, data)
+	json.NewEncoder(w).Encode(data)
 }
 
 // PaginationParams - Process supplied params

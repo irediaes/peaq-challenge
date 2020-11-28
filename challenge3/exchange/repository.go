@@ -54,44 +54,23 @@ func unmarshalRate(rate models.Rate) *pb.Rate {
 }
 
 // UnmarshalProtoResponseData ...
-func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoRate int) []*pb.ResponseData {
+func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) []*pb.ResponseData {
 
 	responseDataList := []*pb.ResponseData{}
 
 	for i := 0; i < len(records); i++ {
 
-		record := records[i]
 		responseMarketData := []*pb.ResponseMarketData{}
 
-		marketData := &pb.ResponseMarketData{
-			MarketPair: record.FromRate.MarketName,
+		fromDate := time.Unix(records[i].FromDate, 0).UTC()
+		toDate := time.Unix(records[i].ToDate, 0).UTC()
+
+		for n := 0; n < numberOfCrytoMarket; n++ {
+			record := records[i+n]
+			marketData := processMarketData(record)
+			responseMarketData = append(responseMarketData, marketData)
 		}
-		growthData := &pb.GrowthData{}
-
-		growthData.VolumeGrowth = float32(utils.Round4Decimal(record.VolumeGrowth))
-		growthData.HighGrowth = float32(utils.Round4Decimal(record.HighGrowth))
-		growthData.LowGrowth = float32(utils.Round4Decimal(record.LowGrowth))
-		marketData.GrowthData = growthData
-		responseMarketData = append(responseMarketData, marketData)
-
-		nextRecord := records[i+1]
-		if nextRecord.FromDate == record.FromDate && nextRecord.ToDate == record.ToDate {
-
-			nextMarketData := &pb.ResponseMarketData{
-				MarketPair: nextRecord.FromRate.MarketName,
-			}
-			nextGrowthData := &pb.GrowthData{}
-
-			nextGrowthData.VolumeGrowth = float32(utils.Round4Decimal(nextRecord.VolumeGrowth))
-			nextGrowthData.HighGrowth = float32(utils.Round4Decimal(nextRecord.HighGrowth))
-			nextGrowthData.LowGrowth = float32(utils.Round4Decimal(nextRecord.LowGrowth))
-			nextMarketData.GrowthData = nextGrowthData
-			responseMarketData = append(responseMarketData, nextMarketData)
-			i++
-		}
-
-		fromDate := time.Unix(record.FromDate, 0).UTC()
-		toDate := time.Unix(record.ToDate, 0).UTC()
+		i += (numberOfCrytoMarket - 1)
 
 		response := &pb.ResponseData{
 			From:       fromDate.Format(timeFormat),
@@ -104,6 +83,17 @@ func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoRat
 	return responseDataList
 }
 
-func processBatchGrowthData() {
+func processMarketData(record *models.GrowthRecord) *pb.ResponseMarketData {
+	marketData := &pb.ResponseMarketData{
+		MarketPair: record.FromRate.MarketName,
+	}
 
+	growthData := &pb.GrowthData{}
+
+	growthData.VolumeGrowth = float32(utils.Round4Decimal(record.VolumeGrowth))
+	growthData.HighGrowth = float32(utils.Round4Decimal(record.HighGrowth))
+	growthData.LowGrowth = float32(utils.Round4Decimal(record.LowGrowth))
+	marketData.GrowthData = growthData
+
+	return marketData
 }
