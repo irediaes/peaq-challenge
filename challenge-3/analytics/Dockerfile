@@ -14,7 +14,7 @@ RUN go mod download
 COPY . .
 
 RUN go test -v -vet=off ./tests/...
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o analytics .
+RUN cd cmd && CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o ../analytics .
 
 # Run container
 FROM alpine:latest

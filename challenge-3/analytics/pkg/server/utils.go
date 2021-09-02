@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -17,23 +17,38 @@ var allowedFormats = map[string]string{
 	jsonString: jsonString,
 }
 
+type Response struct {
+	data map[string]interface{}
+}
+
+func NewResponse() *Response {
+	return &Response{
+		data: map[string]interface{}{},
+	}
+}
+
 // Message ...
-func Message(status bool, message string) map[string]interface{} {
-	return map[string]interface{}{"status": status, "message": message}
+func (res *Response) Message(status bool, message string) {
+	res.data["status"] = status
+	res.data["message"] = message
+}
+
+func (res *Response) AddCustomData(key string, data interface{}) {
+	res.data[key] = data
 }
 
 // Respond ...
-func Respond(w http.ResponseWriter, r *http.Request, data interface{}) {
+func (res *Response) Respond(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(res.data)
 
 }
 
 // ErrorResponse ...
-func ErrorResponse(errorCode int, w http.ResponseWriter, r *http.Request, data map[string]interface{}) {
+func (res *Response) ErrorResponse(errorCode int, w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(errorCode)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(res.data)
 }
 
 // PaginationParams - Process supplied params

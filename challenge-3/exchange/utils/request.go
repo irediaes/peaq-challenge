@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,7 +17,7 @@ func SendRequestAndParseResponse(mtd, url string, payload, respObj interface{}) 
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(data))
+	// fmt.Println(string(data))
 
 	// var d respObj
 	json.Unmarshal(data, respObj)

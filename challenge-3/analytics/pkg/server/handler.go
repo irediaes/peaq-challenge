@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"context"
@@ -13,6 +13,8 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		resp := NewResponse()
+
 		from, to, format := PaginationParams(r)
 
 		println(from, to)
@@ -24,20 +26,22 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 
 		records, err := rateService.GetGrowthRecords(ctx, req)
 		fmt.Println(records, err)
+		fmt.Println(records.Data[0].MarketData, "records.Data[0].MarketData")
 
 		if format == jsonString {
 			if err != nil {
-				resp := Message(false, "Error Occurred while fetching Records.")
-				ErrorResponse(http.StatusBadRequest, w, r, resp)
+				resp.Message(false, "Error Occurred while fetching Records.")
+				resp.ErrorResponse(http.StatusBadRequest, w, r)
 				return
 			}
 
-			Respond(w, r, records.Data)
+			resp.Message(true, "success")
+			resp.AddCustomData("results", records.Data)
+			resp.Respond(w, r)
 			return
 		}
-		resp := Message(false, "Bad Format Supplied")
-		ErrorResponse(http.StatusBadRequest, w, r, resp)
-		return
+		resp.Message(false, "Bad Format Supplied")
+		resp.ErrorResponse(http.StatusBadRequest, w, r)
 	}
 
 }

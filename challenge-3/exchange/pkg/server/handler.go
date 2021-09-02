@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 
@@ -25,9 +26,13 @@ func (h *exchangeServiceServer) GetGrowthRecords(ctx context.Context, req *pb.Ge
 
 	records, err := h.repository.GetByTimestamp(req.FromTimestamp, req.ToTimestamp)
 
-	response := &pb.Response{}
+	var response pb.Response
 
 	response.Data = UnmarshalProtoResponseData(records, int(numMarket))
 
-	return response, err
+	fmt.Println("GetGrowthRecords ", response.Data)
+
+	response.Data[0].GrowthData = response.Data[0].MarketData[0].GrowthData
+
+	return &response, err
 }
