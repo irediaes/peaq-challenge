@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ebikode/peaq-challenge/challenge3/analytics/pkg/server"
+	"github.com/ebikode/peaq-challenge/challenge-3/analytics/pkg/server"
 )
 
 func main() {

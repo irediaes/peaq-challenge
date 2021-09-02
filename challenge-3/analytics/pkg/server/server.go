@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"time"
 
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/backoff"
 )

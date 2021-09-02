@@ -32,7 +32,5 @@ func (h *exchangeServiceServer) GetGrowthRecords(ctx context.Context, req *pb.Ge
 
 	fmt.Println("GetGrowthRecords ", response.Data)
 
-	response.Data[0].GrowthData = response.Data[0].MarketData[0].GrowthData
-
 	return &response, err
 }

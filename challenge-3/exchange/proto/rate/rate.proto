@@ -51,7 +51,6 @@ message ResponseData {
     string from = 1;
     string to = 2;
     repeated ResponseMarketData market_data= 3;
-    GrowthData growth_data = 4;
 }
     
 message ResponseMarketData {

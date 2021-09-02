@@ -34,7 +34,7 @@ func (r *GrowthRecordStorage) FetchByTimestamp(from, to int64) []*models.GrowthR
 	var rates []*models.GrowthRecord
 
 	// Select resource from database
-	r.db.Debug().
+	r.db.
 		Preload("FromRate").
 		Preload("ToRate").
 		Where("from_date >= ? AND to_date <= ?", from, to).

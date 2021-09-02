@@ -2,10 +2,9 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 )
 
 // GetGrowthRecords ...
@@ -25,8 +24,7 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 		}
 
 		records, err := rateService.GetGrowthRecords(ctx, req)
-		fmt.Println(records, err)
-		fmt.Println(records.Data[0].MarketData, "records.Data[0].MarketData")
+		// fmt.Println(records, err)
 
 		if format == jsonString {
 			if err != nil {
