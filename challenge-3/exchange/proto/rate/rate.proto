@@ -5,7 +5,7 @@ package rate;
 
 
 service RateService {
-    rpc GetGrowthRecords(GetRequest) returns (Response) {}
+    rpc GetGrowthRecords(GetRequest) returns (Response);
 }
 
 message Rate {
@@ -30,6 +30,12 @@ message GrowthRecord {
     Rate to_rate = 10;
 }
 
+message GrowthData {
+    string volume_growth = 1;
+    string high_growth = 2;
+    string low_growth = 3;
+}
+
 // Created a blank get request
 message GetRequest {
     int64 from_timestamp = 1;
@@ -45,15 +51,10 @@ message ResponseData {
     string from = 1;
     string to = 2;
     repeated ResponseMarketData market_data= 3;
+    GrowthData growth_data = 4;
 }
     
 message ResponseMarketData {
     string market_pair = 1;
     GrowthData growth_data = 2;
-}
-
-message GrowthData {
-    string volume_growth = 1;
-    string high_growth = 2;
-    string low_growth = 3;
 }

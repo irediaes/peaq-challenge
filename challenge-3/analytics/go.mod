@@ -9,6 +9,7 @@ go 1.14
 // )
 
 require (
+	github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210902180042-f969ab4aafd0 // indirect
 	github.com/ebikode/peaq-challenge/challenge3/exchange v0.0.0-20201128173823-aaece07d298c
 	github.com/whiteshtef/clockwork v0.0.0-20200221012748-027e62affd84 // indirect
 	// github.com/ebikode/peaq-challenge/challenge3/exchange v0.0.0-20201126173304-e61921fda5bd
