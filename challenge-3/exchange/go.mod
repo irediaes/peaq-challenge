@@ -1,4 +1,4 @@
-module github.com/ebikode/peaq-challenge/challenge3/exchange
+module github.com/ebikode/peaq-challenge/challenge-3/exchange
 
 go 1.14
 

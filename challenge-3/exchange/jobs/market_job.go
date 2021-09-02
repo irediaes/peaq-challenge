@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/growth"
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/rate"
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/utils"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/pkg/growth"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/pkg/rate"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/utils"
 )
 
 const (

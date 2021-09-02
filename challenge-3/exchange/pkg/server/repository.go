@@ -3,9 +3,9 @@ package server
 import (
 	"time"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/utils"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/utils"
 )
 
 const (

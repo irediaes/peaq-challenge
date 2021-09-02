@@ -1,7 +1,7 @@
 package growth
 
 import (
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
 )
 
 // DBRepository ...

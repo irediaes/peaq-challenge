@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 )
 
 type exchangeServiceServer struct {

@@ -3,7 +3,7 @@ package rate
 import (
 	"errors"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
 )
 
 // Service provides rate operations

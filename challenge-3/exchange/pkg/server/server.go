@@ -11,10 +11,10 @@ import (
 	"net"
 	"os"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/jobs"
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/pkg/growth"
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
-	storage "github.com/ebikode/peaq-challenge/challenge3/exchange/storage/mysql"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/jobs"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/pkg/growth"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
+	storage "github.com/ebikode/peaq-challenge/challenge-3/exchange/storage/mysql"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )

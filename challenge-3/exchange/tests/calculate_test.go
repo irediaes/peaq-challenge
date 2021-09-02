@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/utils"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/utils"
 )
 
 // TestMain ...

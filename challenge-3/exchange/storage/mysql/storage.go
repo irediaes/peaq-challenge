@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/ebikode/peaq-challenge/challenge3/exchange/models"
+	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
