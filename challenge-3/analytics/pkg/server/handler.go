@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
@@ -36,7 +35,7 @@ func (s *analyticsServer) GetGrowthRecords(ctx context.Context) http.HandlerFunc
 		}
 
 		records, err := s.rateService.GetGrowthRecords(ctx, req)
-		fmt.Println(records, err)
+		// fmt.Println(records, err)
 
 		if format == jsonString {
 			if err != nil {
@@ -76,7 +75,7 @@ func (s *analyticsServer) GetRawGrowthRecords(ctx context.Context) http.HandlerF
 		}
 
 		records, err := s.rateService.GetRawGrowthRecords(ctx, req)
-		fmt.Println(records, err)
+		// fmt.Println(records, err)
 
 		if format == jsonString {
 			if err != nil {

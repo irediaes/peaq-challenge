@@ -57,6 +57,12 @@ message RawResponse {
     repeated GrowthRecord raw_results = 3;
 }
 
+message ErrorResponse {
+    // default: false
+    bool status = 1;
+    string message = 2;
+}
+
 
 message ResponseData {
     string from = 1;

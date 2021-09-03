@@ -28,6 +28,7 @@ func InitServer() error {
 
 	fmt.Printf("gPRC Server started on %s \n\n", serverAddr)
 	conn, err := SetUpGrpcClient(serverAddr)
+	go ShutDownConnection(conn)
 
 	if err != nil {
 		return fmt.Errorf("failed to listen: %v", err)

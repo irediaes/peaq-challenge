@@ -38,7 +38,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
       description: "Returned when the user does not send a valid request."
       schema: {
         json_schema: {
-          type: STRING
+          ref: ".rate.ErrorResponse"
         }
       }
     }
