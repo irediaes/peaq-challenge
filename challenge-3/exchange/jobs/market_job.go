@@ -23,7 +23,19 @@ var allowedMarket = map[string]string{
 	ethAda: ethAda,
 }
 
-func getMarketData(rateService rate.Service, growthService growth.Service) {
+type marketJobHandler struct {
+	RateService   rate.Service
+	GrowthService growth.Service
+}
+
+func NewMarketJobHandler(rateService rate.Service, growthService growth.Service) *marketJobHandler {
+	return &marketJobHandler{
+		rateService,
+		growthService,
+	}
+}
+
+func (mjh *marketJobHandler) getMarketData() {
 
 	fmt.Println("Get Market Data called!")
 
@@ -41,28 +53,32 @@ func getMarketData(rateService rate.Service, growthService growth.Service) {
 		// Screen required data
 		if _, ok := allowedMarket[market]; ok {
 
-			oldRate := rateService.GetByMarketName(market)
-
-			newRate, err := saveRate(data, rateService)
-
-			if err != nil {
-				fmt.Printf(`an error occurred while creating market rate: "%s"`, err.Error())
-
-			}
-
-			if oldRate != nil && err == nil {
-
-				err := saveGrowthRate(newRate, oldRate, growthService)
-
-				if err != nil {
-					fmt.Printf(`an error occurred while creating market growth rate: "%s"`, err.Error())
-				}
-			}
+			mjh.processMarketData(data, market)
 		}
 	}
 }
 
-func saveRate(data models.ResultPayload, rateService rate.Service) (*models.Rate, error) {
+func (mjh *marketJobHandler) processMarketData(data models.ResultPayload, market string) {
+	oldRate := mjh.RateService.GetByMarketName(market)
+
+	newRate, err := mjh.saveRate(data)
+
+	if err != nil {
+		fmt.Printf(`an error occurred while creating market rate: "%s"`, err.Error())
+
+	}
+
+	if oldRate != nil && err == nil {
+
+		err := mjh.saveGrowthRate(newRate, oldRate)
+
+		if err != nil {
+			fmt.Printf(`an error occurred while creating market growth rate: "%s"`, err.Error())
+		}
+	}
+}
+
+func (mjh *marketJobHandler) saveRate(data models.ResultPayload) (*models.Rate, error) {
 	now := time.Now()
 	market := data.MarketName
 	volume := data.Volume
@@ -77,14 +93,11 @@ func saveRate(data models.ResultPayload, rateService rate.Service) (*models.Rate
 		Timestamp:  now,
 	}
 
-	newRate, err := rateService.CreateRate(rate)
+	newRate, err := mjh.RateService.CreateRate(rate)
 	return newRate, err
 }
 
-func saveGrowthRate(
-	newRate, oldRate *models.Rate,
-	growthService growth.Service,
-) error {
+func (mjh *marketJobHandler) saveGrowthRate(newRate, oldRate *models.Rate) error {
 	now := time.Now()
 
 	volumeGrowth := utils.CalculatePercentageDifference(newRate.Volume, oldRate.Volume)
@@ -108,7 +121,7 @@ func saveGrowthRate(
 	// fmt.Println(record.HighGrowth)
 	// fmt.Println(record.LowGrowth)
 
-	_, err := growthService.CreateGrowthRecord(record)
+	_, err := mjh.GrowthService.CreateGrowthRecord(record)
 
 	return err
 }
