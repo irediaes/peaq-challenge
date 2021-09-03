@@ -38,8 +38,11 @@ func InitServer() error {
 
 	client := pb.NewRateServiceClient(conn)
 
+	analyticServer := NewAnalyticsServer(client)
+
 	fmt.Printf("Server started on %s \n\n", host)
-	http.HandleFunc("/export/analytics", GetGrowthRecords(ctx, client))
+	http.HandleFunc("/export/analytics", analyticServer.GetGrowthRecords(ctx))
+	http.HandleFunc("/export/analytics/raw", analyticServer.GetRawGrowthRecords(ctx))
 
 	// Serve the swagger-ui and swagger file
 	statikFS, err := fs.New()

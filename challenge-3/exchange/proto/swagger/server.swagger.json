@@ -241,6 +241,12 @@
     "rateRawResponse": {
       "type": "object",
       "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
         "rawResults": {
           "type": "array",
           "items": {
@@ -252,6 +258,12 @@
     "rateResponse": {
       "type": "object",
       "properties": {
+        "status": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
         "results": {
           "type": "array",
           "items": {

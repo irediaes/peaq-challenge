@@ -6,9 +6,9 @@ package rate;
 
 
 service RateService {
-    // Fetch Processed Growth Records
+    // GetGrowthRecords Fetch Processed Growth Records
     rpc GetGrowthRecords(GetRequest) returns (Response);
-    // Fetch Raw Growth Records
+    // GetRawGrowthRecords Fetch Raw Growth Records
     rpc GetRawGrowthRecords(GetRequest) returns (RawResponse);
 }
 
@@ -46,11 +46,15 @@ message GetRequest {
 }
 
 message Response {
-    repeated ResponseData results = 2;
+    bool status = 1;
+    string message = 2;
+    repeated ResponseData results = 3;
 }
 
 message RawResponse {
-    repeated GrowthRecord raw_results = 1;
+    bool status = 1;
+    string message = 2;
+    repeated GrowthRecord raw_results = 3;
 }
 
 
