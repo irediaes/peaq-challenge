@@ -18,10 +18,9 @@ type Repository interface {
 }
 
 // UnmarshalProtoResponseData ...
-func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) ([]*pb.ResponseData, []*pb.GrowthRecord) {
+func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) []*pb.ResponseData {
 
 	responseDataList := []*pb.ResponseData{}
-	responseGrowthDataList := []*pb.GrowthRecord{}
 
 	for i := 0; i < len(records); i++ {
 
@@ -34,10 +33,6 @@ func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMar
 			record := records[i+n]
 			marketData := processMarketData(record)
 			responseMarketData = append(responseMarketData, marketData)
-
-			growthRecord := processGrowthRecord(record)
-
-			responseGrowthDataList = append(responseGrowthDataList, growthRecord)
 		}
 		i += (numberOfCrytoMarket - 1)
 
@@ -49,7 +44,25 @@ func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMar
 
 		responseDataList = append(responseDataList, response)
 	}
-	return responseDataList, responseGrowthDataList
+	return responseDataList
+}
+
+func UnmarshalProtoRawResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) []*pb.GrowthRecord {
+
+	responseGrowthDataList := []*pb.GrowthRecord{}
+
+	for i := 0; i < len(records); i++ {
+
+		for n := 0; n < numberOfCrytoMarket; n++ {
+			record := records[i+n]
+			growthRecord := processGrowthRecord(record)
+
+			responseGrowthDataList = append(responseGrowthDataList, growthRecord)
+		}
+		i += (numberOfCrytoMarket - 1)
+
+	}
+	return responseGrowthDataList
 }
 
 func processMarketData(record *models.GrowthRecord) *pb.ResponseMarketData {

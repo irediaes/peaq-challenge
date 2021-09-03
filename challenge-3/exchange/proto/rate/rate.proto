@@ -4,60 +4,12 @@ option go_package="github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/
 package rate;
 
 
-import "google/api/annotations.proto";
-import "protoc-gen-swagger/options/annotations.proto";
-
-option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = { 
-  info: {
-    title: "Peaq Challenge API DOc"
-    description: "Analytics of Cryto-Currency Exchange Rates"
-    version: "1.0"
-    contact: {
-      name: "Iredia"
-      url: "https://github.com/ebikode/peaq-challenge"
-      email: "sammyrogers2010@gmail.com"
-    }
-  }
-  schemes: HTTPS
-  schemes: HTTP
-  consumes: "application/json"
-  produces: "application/json"
-  responses: {
-    key: "404"
-    value: {
-      description: "Returned when the resource does not exist."
-      schema: {
-        json_schema: {
-          type: STRING
-        }
-      }
-    }
-  }
-  responses: {
-    key: "400"
-    value: {
-      description: "Returned when the user does not send a valid request."
-      schema: {
-        json_schema: {
-          type: STRING
-        }
-      }
-    }
-  }
-};
-
 
 service RateService {
-    // Fetch Growth Records
-    // Fetch all Growth record data in five minutes interval
-    rpc GetGrowthRecords(GetRequest) returns (Response){
-      option (google.api.http) = {
-            get: "/export/analytics"
-        };
-      option (grpc.gateway.protoc_gen_swagger.options.openapiv2_operation) = {
-        tags: "Analytics"
-      };
-    };
+    // Fetch Processed Growth Records
+    rpc GetGrowthRecords(GetRequest) returns (Response);
+    // Fetch Raw Growth Records
+    rpc GetRawGrowthRecords(GetRequest) returns (RawResponse);
 }
 
 message Rate {
@@ -88,24 +40,19 @@ message GrowthData {
     string low_growth = 3;
 }
 
-// Created a blank get request
 message GetRequest {
-    // swagger:ignore
     int64 from_timestamp = 1;
-    // swagger:ignore
     int64 to_timestamp = 2;
-    // from={yyyy-mm-ddThh:mm:ss}
-    string from = 3;
-    // to={yyyy-mm-ddThh:mm:ss}
-    string to = 4;
-    // format=json
-    string format = 5;
 }
 
 message Response {
-    repeated GrowthRecord growth_records = 1;
-    repeated ResponseData data = 2;
+    repeated ResponseData results = 2;
 }
+
+message RawResponse {
+    repeated GrowthRecord raw_results = 1;
+}
+
 
 message ResponseData {
     string from = 1;

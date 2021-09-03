@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	_ "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 )
 

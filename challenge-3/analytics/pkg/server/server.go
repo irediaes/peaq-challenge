@@ -12,7 +12,7 @@ import (
 	openApiMdware "github.com/go-openapi/runtime/middleware"
 	"github.com/rakyll/statik/fs"
 
-	_ "github.com/ebikode/peaq-challenge/challenge-3/analytics/statik"
+	_ "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/statik"
 
 	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 	"google.golang.org/grpc"
@@ -49,7 +49,7 @@ func InitServer() error {
 	fileServer := http.FileServer(statikFS)
 
 	// Added swagger setup and routes
-	redocOpts := openApiMdware.RedocOpts{SpecURL: "/public/swagger.yaml"}
+	redocOpts := openApiMdware.RedocOpts{SpecURL: "/public/server.swagger.json"}
 	redoc := openApiMdware.Redoc(redocOpts, nil)
 
 	http.Handle("/docs", redoc)

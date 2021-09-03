@@ -23,8 +23,9 @@
   "paths": {
     "/export/analytics": {
       "get": {
-        "summary": "Fetch Growth Records\nFetch all Growth record data in five minutes interval",
-        "operationId": "RateService_GetGrowthRecords",
+        "summary": "Fetch Growth Records",
+        "description": "Fetch all Growth record data saved in five minutes interval",
+        "operationId": "ServerService_GetGrowthRecords",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -55,21 +56,66 @@
         },
         "parameters": [
           {
-            "name": "fromTimestamp",
-            "description": "swagger:ignore.",
+            "name": "from",
+            "description": "from={yyyy-mm-ddThh:mm:ss}.",
             "in": "query",
             "required": false,
-            "type": "string",
-            "format": "int64"
+            "type": "string"
           },
           {
-            "name": "toTimestamp",
-            "description": "swagger:ignore.",
+            "name": "to",
+            "description": "to={yyyy-mm-ddThh:mm:ss}.",
             "in": "query",
             "required": false,
-            "type": "string",
-            "format": "int64"
+            "type": "string"
           },
+          {
+            "name": "format",
+            "description": "format=json.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Analytics"
+        ]
+      }
+    },
+    "/export/analytics/raw": {
+      "get": {
+        "summary": "Fetch Raw Growth Records",
+        "description": "Fetch all Raw Growth record data saved in five minutes interval",
+        "operationId": "ServerService_GetRawGrowthRecords",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/rateRawResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when the user does not send a valid request.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
           {
             "name": "from",
             "description": "from={yyyy-mm-ddThh:mm:ss}.",
@@ -192,16 +238,21 @@
         }
       }
     },
-    "rateResponse": {
+    "rateRawResponse": {
       "type": "object",
       "properties": {
-        "growthRecords": {
+        "rawResults": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/rateGrowthRecord"
           }
-        },
-        "data": {
+        }
+      }
+    },
+    "rateResponse": {
+      "type": "object",
+      "properties": {
+        "results": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/rateResponseData"

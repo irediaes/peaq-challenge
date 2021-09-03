@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strconv"
 
@@ -27,10 +26,26 @@ func (h *exchangeServiceServer) GetGrowthRecords(ctx context.Context, req *pb.Ge
 	records, err := h.repository.GetByTimestamp(req.FromTimestamp, req.ToTimestamp)
 
 	var response pb.Response
+	response.Results = UnmarshalProtoResponseData(records, int(numMarket))
 
-	response.Data, response.GrowthRecords = UnmarshalProtoResponseData(records, int(numMarket))
+	// fmt.Println("GetGrowthRecords ", response.Results)
 
-	fmt.Println("GetGrowthRecords ", response.Data)
+	return &response, err
+}
+
+// FetchGrowths ...
+func (h *exchangeServiceServer) GetRawGrowthRecords(ctx context.Context, req *pb.GetRequest) (*pb.RawResponse, error) {
+
+	numberOfCrytoMarket := os.Getenv("NUMBER_MARKET")
+	numMarket, _ := strconv.ParseInt(numberOfCrytoMarket, 10, 64)
+
+	records, err := h.repository.GetByTimestamp(req.FromTimestamp, req.ToTimestamp)
+
+	var response pb.RawResponse
+
+	response.RawResults = UnmarshalProtoRawResponseData(records, int(numMarket))
+
+	// fmt.Println("GetGrowthRecords ", response.RawResults)
 
 	return &response, err
 }
