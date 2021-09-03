@@ -8,7 +8,7 @@ go 1.14
 // )
 
 require (
-	github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903162734-741664d95d48
+	github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903173456-82638ffcedd5
 	github.com/go-openapi/runtime v0.19.31
 	github.com/rakyll/statik v0.1.7
 	google.golang.org/grpc v1.40.0

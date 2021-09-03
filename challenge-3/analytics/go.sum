@@ -62,6 +62,8 @@ github.com/docker/go-units v0.3.3/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDD
 github.com/docker/go-units v0.4.0/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
 github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903162734-741664d95d48 h1:dhOFqpmlVvA8p+JlWOEQxWrC5yOWZbNfybgi/Kj+Msc=
 github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903162734-741664d95d48/go.mod h1:NZNP2oC5ho5iLCm8Yz0tAdRs1aAZrlQxxttyxlvI5Z8=
+github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903173456-82638ffcedd5 h1:A2NisRPbZrnl7a3JZN/p6sC0VaUF8AEGN0aI3UztgQE=
+github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210903173456-82638ffcedd5/go.mod h1:NZNP2oC5ho5iLCm8Yz0tAdRs1aAZrlQxxttyxlvI5Z8=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.1-0.20191026205805-5f8ba28d4473/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
