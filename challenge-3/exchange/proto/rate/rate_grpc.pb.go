@@ -18,9 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RateServiceClient interface {
-	// Fetch Processed Growth Records
+	// GetGrowthRecords Fetch Processed Growth Records
 	GetGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
-	// Fetch Raw Growth Records
+	// GetRawGrowthRecords Fetch Raw Growth Records
 	GetRawGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*RawResponse, error)
 }
 
@@ -54,9 +54,9 @@ func (c *rateServiceClient) GetRawGrowthRecords(ctx context.Context, in *GetRequ
 // All implementations must embed UnimplementedRateServiceServer
 // for forward compatibility
 type RateServiceServer interface {
-	// Fetch Processed Growth Records
+	// GetGrowthRecords Fetch Processed Growth Records
 	GetGrowthRecords(context.Context, *GetRequest) (*Response, error)
-	// Fetch Raw Growth Records
+	// GetRawGrowthRecords Fetch Raw Growth Records
 	GetRawGrowthRecords(context.Context, *GetRequest) (*RawResponse, error)
 	mustEmbedUnimplementedRateServiceServer()
 }
