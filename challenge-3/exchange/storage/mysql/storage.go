@@ -50,7 +50,7 @@ func (config *Config) InitDB() (*EDatabase, error) {
 		mysql.Config{
 			DSN: dbURI,
 		}), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Error),
+		Logger: logger.Default.LogMode(logger.Silent),
 	})
 
 	if err != nil {

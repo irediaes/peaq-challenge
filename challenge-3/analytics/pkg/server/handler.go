@@ -2,13 +2,15 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 )
 
 // GetGrowthRecords ...
+// Fetch Growth Records
+//
+// Fetch all Growth record data in five minutes interval
 func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -25,8 +27,7 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 		}
 
 		records, err := rateService.GetGrowthRecords(ctx, req)
-		fmt.Println(records, err)
-		fmt.Println(records.Data[0].MarketData, "records.Data[0].MarketData")
+		// fmt.Println(records, err)
 
 		if format == jsonString {
 			if err != nil {
@@ -37,6 +38,8 @@ func GetGrowthRecords(ctx context.Context, rateService pb.RateServiceClient) htt
 
 			resp.Message(true, "success")
 			resp.AddCustomData("results", records.Data)
+			// UNCOMMENT THIS IF YOU NEED THE FULL RESULTS DATA
+			// resp.AddCustomData("results_records", records.GrowthRecords)
 			resp.Respond(w, r)
 			return
 		}

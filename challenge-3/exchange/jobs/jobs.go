@@ -21,13 +21,16 @@ func Init(mdb *storage.EDatabase) {
 	growthService := growth.NewService(growthStorage)
 	rateService := rate.NewService(rateStorage)
 
+	// Init market job handler
+	jobHandler := NewMarketJobHandler(rateService, growthService)
+
 	// Initialize schedules
 	sched := schedule.NewSchedule()
 
 	var runJobs = func() {
 
 		var runMarkDataAutomation = func() {
-			getMarketData(rateService, growthService)
+			jobHandler.getMarketData()
 		}
 		go runMarkDataAutomation()
 		go sched.Run(runMarkDataAutomation, scheduleInMinites)

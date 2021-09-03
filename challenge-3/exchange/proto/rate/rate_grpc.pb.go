@@ -18,7 +18,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RateServiceClient interface {
+	// Fetch Processed Growth Records
 	GetGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
+	// Fetch Raw Growth Records
+	GetRawGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*RawResponse, error)
 }
 
 type rateServiceClient struct {
@@ -38,11 +41,23 @@ func (c *rateServiceClient) GetGrowthRecords(ctx context.Context, in *GetRequest
 	return out, nil
 }
 
+func (c *rateServiceClient) GetRawGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*RawResponse, error) {
+	out := new(RawResponse)
+	err := c.cc.Invoke(ctx, "/rate.RateService/GetRawGrowthRecords", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RateServiceServer is the server API for RateService service.
 // All implementations must embed UnimplementedRateServiceServer
 // for forward compatibility
 type RateServiceServer interface {
+	// Fetch Processed Growth Records
 	GetGrowthRecords(context.Context, *GetRequest) (*Response, error)
+	// Fetch Raw Growth Records
+	GetRawGrowthRecords(context.Context, *GetRequest) (*RawResponse, error)
 	mustEmbedUnimplementedRateServiceServer()
 }
 
@@ -52,6 +67,9 @@ type UnimplementedRateServiceServer struct {
 
 func (UnimplementedRateServiceServer) GetGrowthRecords(context.Context, *GetRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGrowthRecords not implemented")
+}
+func (UnimplementedRateServiceServer) GetRawGrowthRecords(context.Context, *GetRequest) (*RawResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRawGrowthRecords not implemented")
 }
 func (UnimplementedRateServiceServer) mustEmbedUnimplementedRateServiceServer() {}
 
@@ -84,6 +102,24 @@ func _RateService_GetGrowthRecords_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RateService_GetRawGrowthRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RateServiceServer).GetRawGrowthRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/rate.RateService/GetRawGrowthRecords",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RateServiceServer).GetRawGrowthRecords(ctx, req.(*GetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RateService_ServiceDesc is the grpc.ServiceDesc for RateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +130,10 @@ var RateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGrowthRecords",
 			Handler:    _RateService_GetGrowthRecords_Handler,
+		},
+		{
+			MethodName: "GetRawGrowthRecords",
+			Handler:    _RateService_GetRawGrowthRecords_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

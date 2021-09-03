@@ -9,7 +9,12 @@ import (
 	"os/signal"
 	"time"
 
-	pb "github.com/ebikode/peaq-challenge/challenge3/exchange/proto/rate"
+	openApiMdware "github.com/go-openapi/runtime/middleware"
+	"github.com/rakyll/statik/fs"
+
+	_ "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/statik"
+
+	pb "github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/rate"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/backoff"
 )
@@ -35,6 +40,21 @@ func InitServer() error {
 
 	fmt.Printf("Server started on %s \n\n", host)
 	http.HandleFunc("/export/analytics", GetGrowthRecords(ctx, client))
+
+	// Serve the swagger-ui and swagger file
+	statikFS, err := fs.New()
+	if err != nil {
+		return err
+	}
+	fileServer := http.FileServer(statikFS)
+
+	// Added swagger setup and routes
+	redocOpts := openApiMdware.RedocOpts{SpecURL: "/public/server.swagger.json"}
+	redoc := openApiMdware.Redoc(redocOpts, nil)
+
+	http.Handle("/docs", redoc)
+	http.Handle("/public/", http.StripPrefix("/public", fileServer))
+
 	http.ListenAndServe(host, nil)
 
 	return nil

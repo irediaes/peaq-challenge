@@ -4,8 +4,12 @@ option go_package="github.com/ebikode/peaq-challenge/challenge-3/exchange/proto/
 package rate;
 
 
+
 service RateService {
-    rpc GetGrowthRecords(GetRequest) returns (Response) {}
+    // Fetch Processed Growth Records
+    rpc GetGrowthRecords(GetRequest) returns (Response);
+    // Fetch Raw Growth Records
+    rpc GetRawGrowthRecords(GetRequest) returns (RawResponse);
 }
 
 message Rate {
@@ -30,16 +34,25 @@ message GrowthRecord {
     Rate to_rate = 10;
 }
 
-// Created a blank get request
+message GrowthData {
+    string volume_growth = 1;
+    string high_growth = 2;
+    string low_growth = 3;
+}
+
 message GetRequest {
     int64 from_timestamp = 1;
     int64 to_timestamp = 2;
 }
 
 message Response {
-    repeated GrowthRecord growth_records = 1;
-    repeated ResponseData data = 2;
+    repeated ResponseData results = 2;
 }
+
+message RawResponse {
+    repeated GrowthRecord raw_results = 1;
+}
+
 
 message ResponseData {
     string from = 1;
@@ -50,10 +63,4 @@ message ResponseData {
 message ResponseMarketData {
     string market_pair = 1;
     GrowthData growth_data = 2;
-}
-
-message GrowthData {
-    string volume_growth = 1;
-    string high_growth = 2;
-    string low_growth = 3;
 }
