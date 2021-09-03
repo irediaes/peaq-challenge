@@ -9,9 +9,8 @@ go 1.14
 // )
 
 require (
-	github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210902180042-f969ab4aafd0 // indirect
-	github.com/whiteshtef/clockwork v0.0.0-20200221012748-027e62affd84 // indirect
-	// github.com/ebikode/peaq-challenge/challenge3/exchange v0.0.0-20201126173304-e61921fda5bd
-	golang.org/x/sys v0.0.0-20201126233918-771906719818 // indirect
+	github.com/ebikode/peaq-challenge/challenge-3/exchange v0.0.0-20210902180042-f969ab4aafd0
+	github.com/go-openapi/runtime v0.19.31
+	github.com/rakyll/statik v0.1.7 // indirect
 	google.golang.org/grpc v1.33.2
 )

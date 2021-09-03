@@ -1,6 +1,7 @@
 package server
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/ebikode/peaq-challenge/challenge-3/exchange/models"
@@ -17,9 +18,10 @@ type Repository interface {
 }
 
 // UnmarshalProtoResponseData ...
-func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) []*pb.ResponseData {
+func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMarket int) ([]*pb.ResponseData, []*pb.GrowthRecord) {
 
 	responseDataList := []*pb.ResponseData{}
+	responseGrowthDataList := []*pb.GrowthRecord{}
 
 	for i := 0; i < len(records); i++ {
 
@@ -32,6 +34,10 @@ func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMar
 			record := records[i+n]
 			marketData := processMarketData(record)
 			responseMarketData = append(responseMarketData, marketData)
+
+			growthRecord := processGrowthRecord(record)
+
+			responseGrowthDataList = append(responseGrowthDataList, growthRecord)
 		}
 		i += (numberOfCrytoMarket - 1)
 
@@ -43,7 +49,7 @@ func UnmarshalProtoResponseData(records []*models.GrowthRecord, numberOfCrytoMar
 
 		responseDataList = append(responseDataList, response)
 	}
-	return responseDataList
+	return responseDataList, responseGrowthDataList
 }
 
 func processMarketData(record *models.GrowthRecord) *pb.ResponseMarketData {
@@ -59,4 +65,32 @@ func processMarketData(record *models.GrowthRecord) *pb.ResponseMarketData {
 	marketData.GrowthData = growthData
 
 	return marketData
+}
+
+func processGrowthRecord(record *models.GrowthRecord) *pb.GrowthRecord {
+
+	growthRecord := &pb.GrowthRecord{}
+
+	growthRecord.VolumeGrowth = utils.Round4Decimal(record.VolumeGrowth)
+	growthRecord.HighGrowth = utils.Round4Decimal(record.HighGrowth)
+	growthRecord.LowGrowth = utils.Round4Decimal(record.LowGrowth)
+	growthRecord.To = record.ToDate
+	growthRecord.From = record.FromDate
+	growthRecord.ToRateId = int32(record.ToRateID)
+	growthRecord.FromRateId = int32(record.FromRateID)
+
+	growthRecord.FromRate = assignRate(record.FromRate)
+	growthRecord.ToRate = assignRate(record.ToRate)
+	return growthRecord
+}
+
+func assignRate(rate models.Rate) *pb.Rate {
+	return &pb.Rate{
+		Id:         int32(rate.ID),
+		MarketName: rate.MarketName,
+		Volume:     utils.Round4Decimal(rate.Volume),
+		High:       utils.Round4Decimal(rate.High),
+		Low:        utils.Round4Decimal(rate.Low),
+		Timestamp:  strconv.Itoa(int(rate.Timestamp.Unix())),
+	}
 }

@@ -28,7 +28,7 @@ func (h *exchangeServiceServer) GetGrowthRecords(ctx context.Context, req *pb.Ge
 
 	var response pb.Response
 
-	response.Data = UnmarshalProtoResponseData(records, int(numMarket))
+	response.Data, response.GrowthRecords = UnmarshalProtoResponseData(records, int(numMarket))
 
 	fmt.Println("GetGrowthRecords ", response.Data)
 

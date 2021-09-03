@@ -18,6 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RateServiceClient interface {
+	// Fetch Growth Records
+	// Fetch all Growth record data in five minutes interval
 	GetGrowthRecords(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
@@ -42,6 +44,8 @@ func (c *rateServiceClient) GetGrowthRecords(ctx context.Context, in *GetRequest
 // All implementations must embed UnimplementedRateServiceServer
 // for forward compatibility
 type RateServiceServer interface {
+	// Fetch Growth Records
+	// Fetch all Growth record data in five minutes interval
 	GetGrowthRecords(context.Context, *GetRequest) (*Response, error)
 	mustEmbedUnimplementedRateServiceServer()
 }
